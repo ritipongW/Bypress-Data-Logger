@@ -13,3 +13,6 @@ SPI for Micro SD Card can connected both Hard SPI and Soft SPI (choose the whcic
 | SCK  | GPIS18  |GPI27 |
 | MISO | GPIS19 | GPI13 |
 | MOSI | GPIS23  |  GPI14 |
+
+RTC library provide by Makuna
+Download from https://github.com/Makuna/Rtc.git or libraies manager
