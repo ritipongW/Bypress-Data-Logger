@@ -7,9 +7,9 @@ ESP32 connected to RTC Module and Micro SD Card
 
 SPI for Micro SD Card can connected both Hard SPI and Soft SPI (choose the whcich one)
 
-| SD Card Pins  |   Hard SPI    |   SOft SPI   |
+| SD Card Pins  |   Hard SPI    |   Soft SPI   |
 | ------------- | ------------- | -------------|
-| SS/CS  | GPIO5  | Content Cell |
-| SCK  | GPIS18  | Content Cell |
-| MISO | GPIS19 | Content Cell |
-| MOSI | GPIS23  | Content Cell |
+| SS/CS  | GPIO5  | GPI26 |
+| SCK  | GPIS18  |GPI27 |
+| MISO | GPIS19 | GPI13 |
+| MOSI | GPIS23  |  GPI14 |
