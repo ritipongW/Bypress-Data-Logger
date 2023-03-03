@@ -17,7 +17,7 @@ File file;
 #define FSR1 34//36  //Analogue ports
 #define FSR2 32//32
 #define FSR3 35//34
-//=== SPI Pin of SD Card
+//=== Soft SPI Pin of SD Card --> comment hard SPI connection before use
 #define mySS 26
 #define mySCK 27
 #define myMISO 13
@@ -33,7 +33,7 @@ String dataMessage;
 int testinc = 1;
 int CSV_Header = 0;
 int FirstRec = 0;
-unsigned long Rec_Interval_Min = 1;
+unsigned long Rec_Interval_Min = 60; //can set interval time in minutes, for example 1 mimute or 60 minutes
 unsigned long Rec_Interval_Ms = 0;
 unsigned long last_time = 0;
 
@@ -83,7 +83,9 @@ void setup() {
   //======================================================
   BT.begin("Bypress"); //Bluetooth device name
 
+  //set the time interval to write force data as logger
   Rec_Interval_Ms = Rec_Interval_Min * 60000;
+  
   Serial.print("compiled: ");
   Serial.print(__DATE__);
   Serial.println(__TIME__);
@@ -247,7 +249,7 @@ void loop() {
 //======================= Functions ===========================================
 // Append data to the SD card (DON'T MODIFY THIS FUNCTION)
 void appendFile(fs::FS &fs, const char * path, const char * message) {
-  Serial.printf("Appending to file: %s\n", path);
+  //Serial.printf("Appending to file: %s\n", path);
 
   file = fs.open(path, FILE_APPEND);
   if (!file) {
