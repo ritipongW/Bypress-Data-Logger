@@ -9,10 +9,10 @@ SPI for Micro SD Card can connected both Hard SPI and Soft SPI (choose the whcic
 
 | SD Card Pins  |   VSPI     |   Define SPI   | HSPI    |
 | ------------- | ------------- | -------------| -------------|
-| SS/CS  | GPIO5  | GPI26 | GPI15 |
-| SCK  | GPIS18  |GPI27 | GPI14 |
-| MISO | GPIS19 | GPI13 | GPI12 |
-| MOSI | GPIS23  |  GPI14 | GPI13 |
+| SS/CS  | GPIO5  | GPIO26 | GPIO15 |
+| SCK  | GPIO18  |GPIO27 | GPIO14 |
+| MISO | GPIO19 | GPIO13 | GPIO12 |
+| MOSI | GPIO23  |  GPIO14 | GPIO13 |
 
 RTC library provide by Makuna
 Download from https://github.com/Makuna/Rtc.git or libraies manager
