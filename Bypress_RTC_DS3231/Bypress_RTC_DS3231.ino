@@ -3,7 +3,9 @@
 #include "FS.h"
 #include <SPI.h>
 #include <SD.h>
-#include <RtcDS3231.h>
+//#include <RtcDS3231.h> //for RTC DS3231
+#include <ThreeWire.h>  
+#include <RtcDS1302.h> //for RTC DS1302
 
 File file;
 
@@ -14,9 +16,9 @@ File file;
 
 //===Force sensors=========
 #define noFSRs 3 // Number of FSRs connected
-#define FSR1 34//36  //Analogue ports
-#define FSR2 32//32
-#define FSR3 35//34
+#define FSR1 32//34//36  //Analogue ports
+#define FSR2 35//32//32
+#define FSR3 34//335//34
 //=== Soft SPI Pin of SD Card --> comment hard SPI connection before use
 #define mySS 26
 #define mySCK 27
@@ -24,7 +26,16 @@ File file;
 #define myMOSI 14
 
 ////Class objects
-RtcDS3231<TwoWire> Rtc(Wire);
+//RtcDS3231<TwoWire> Rtc(Wire); //for RTC DS3231
+
+//====================for RTC DS1302
+#define D4 4
+#define D5 5 
+#define D2 2
+ThreeWire myWire(D4,D5,D2); // IO, SCLK, CE
+RtcDS1302<ThreeWire> Rtc(myWire); 
+//=======================================
+
 BluetoothSerial BT;
 
 //======GLobal Variables ====
@@ -57,8 +68,11 @@ long R       = 1 * K;  // R in K Ohm
 long Vcc     = 3.3;    // 5V=5000mV, 3.3V = 3300 mV
 float voltageMax = 0.98 * Vcc; // Maximum voltage set to 95% of Vcc. Set
 
+String RTCmsg="";
+
 void setup() {
   Serial.begin(115200);    // Set serial baud rate to 9600
+  BT.begin("Bypress"); //Bluetooth device name
   delay(500);
   while (!Serial) {
     ;  // wait for serial port to connect. Needed for native USB port only
@@ -81,7 +95,7 @@ void setup() {
 //  }
 //  Serial.println("initialization done.");
   //======================================================
-  BT.begin("Bypress"); //Bluetooth device name
+
 
   //set the time interval to write force data as logger
   Rec_Interval_Ms = Rec_Interval_Min * 60000;
@@ -101,23 +115,30 @@ void setup() {
     Rtc.SetDateTime(compiled);
   }
 
+
   if (!Rtc.GetIsRunning()) {
     Serial.println("RTC was not actively running, starting now");
     Rtc.SetIsRunning(true);
   }
 
   RtcDateTime now = Rtc.GetDateTime();
+
   if (now < compiled) {
-    Serial.println("RTC is older than compile time!  (Updating DateTime)");
+    RTCmsg = "RTC is older than compile time!  (Updating DateTime";
+    Serial.println();
     Rtc.SetDateTime(compiled);
   } else if (now > compiled) {
-    Serial.println("RTC is newer than compile time. (this is expected)");
+    RTCmsg = "RTC is newer than compile time. (this is expected)";
   } else if (now == compiled) {
-    Serial.println("RTC is the same as compile time! (not expected but all is fine)");
+    RTCmsg = "RTC is the same as compile time! (not expected but all is fine)";
   }
+  BT.println(RTCmsg);
+  
   String Strcompiled = GetFileName(now);
+  BT.println(Strcompiled);
   FileName = "/" + Strcompiled + ".csv";
   Serial.println(FileName);
+  
   file = SD.open(FileName.c_str());
   if (!file) {
     Serial.println("File doens't exist");
@@ -128,9 +149,6 @@ void setup() {
   }
   file.close();
   delay(1000);
-
-  //WriteFile(SD, "/02_03_2023_23_47_25.txt", "ElectronicWings.com");
-  //ReadFile(SD, "/02_03_2023_23_47_25.txt");
 }
 
 void loop() {
